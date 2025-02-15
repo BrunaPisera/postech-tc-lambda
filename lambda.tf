@@ -27,10 +27,10 @@ resource "aws_lambda_function" "terraform_lambda_func" {
       ACOMPANHAMENTO_DB_NAME     = "acompanhamento_db"
       ACOMPANHAMENTO_DB_USER     = "postgres"
       ACOMPANHAMENTO_DB_PASSWORD = "banana123"
-      PEDIDOS_DB_HOST     = data.aws_db_instance.tc_pedidos_db.address
-      PEDIDOS_DB_NAME     = "pedidos_db"
-      PEDIDOS_DB_USER     = "postgres"
-      PEDIDOS_DB_PASSWORD = "banana123"
+      PEDIDOS_DB_HOST            = data.aws_db_instance.tc_pedidos_db.address
+      PEDIDOS_DB_NAME            = "pedidos_db"
+      PEDIDOS_DB_USER            = "postgres"
+      PEDIDOS_DB_PASSWORD        = "banana123"
     }
   }
 
