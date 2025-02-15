@@ -25,8 +25,8 @@ def lambda_handler(event, context):
         # Buscar Ids de pedidos expirados
         query_pedidosexpirados = """
             SELECT p."Id"
-                FROM public."Pedido" 
-                WHERE a."Status" = 1
+                FROM public."Pedido" p
+                WHERE p."PagamentoConfirmado" = FALSE
                 AND p."HorarioRecebimento" < NOW() - INTERVAL '15 minutes';
         """
 
@@ -45,7 +45,7 @@ def lambda_handler(event, context):
             WHERE "PedidoAggregateId" IN (
                 SELECT p."Id"
                 FROM public."Pedido" p
-                WHERE a."Status" = 1
+                WHERE p."PagamentoConfirmado" = FALSE
                 AND p."HorarioRecebimento" < NOW() - INTERVAL '15 minutes'
             );
         """
@@ -55,8 +55,8 @@ def lambda_handler(event, context):
 
         # Excluir os registros da tabela Pedido
         query_pedido = """
-        DELETE FROM public."Pedido"
-        WHERE "Status" = 1
+        DELETE FROM public."Pedido" p
+        WHERE p."PagamentoConfirmado" = FALSE
         AND p."HorarioRecebimento" < NOW() - INTERVAL '15 minutes'
         """
 
