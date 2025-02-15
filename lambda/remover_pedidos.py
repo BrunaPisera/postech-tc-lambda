@@ -83,36 +83,37 @@ def lambda_handler(event, context):
     user = os.environ['ACOMPANHAMENTO_DB_USER']
     password = os.environ['ACOMPANHAMENTO_DB_PASSWORD']
 
-    # Conectar ao banco de dados - Acompanhamento
-    try:
-        conn = psycopg2.connect(
-            host=host,
-            database=database,
-            user=user,
-            password=password
-        )
-        print("Conexão bem-sucedida!")
-        cur = conn.cursor()
+    if len(pedidosParaRemover) != 0:
+        # Conectar ao banco de dados - Acompanhamento
+        try:
+            conn = psycopg2.connect(
+                host=host,
+                database=database,
+                user=user,
+                password=password
+            )
+            print("Conexão bem-sucedida!")
+            cur = conn.cursor()
 
-        # Primeira query: Excluir registros relacionados na tabela ItemPedido
-        query_acompanhamento = cur.mogrify("""DELETE FROM public."Acompanhamento" WHERE "PedidoAggregateId" IN %s;""", pedidosParaRemover)
+            # Primeira query: Excluir registros relacionados na tabela ItemPedido
+            query_acompanhamento = cur.mogrify("""DELETE FROM public."Acompanhamento" WHERE "PedidoAggregateId" IN %s;""", pedidosParaRemover)
 
-        # Executar a query para remover da tabela ItemPedido
-        cur.execute(query_acompanhamento)
+            # Executar a query para remover da tabela ItemPedido
+            cur.execute(query_acompanhamento)
 
-        # Aplicar as mudanças no banco de dados
-        conn.commit()
+            # Aplicar as mudanças no banco de dados
+            conn.commit()
 
-        # Fechar cursor e conexão
-        cur.close()
-        print(f"Acompanhamentos removidos em {datetime.now()}.")
-    except Exception as e:
-        print(f"Erro ao conectar em Acompanhamentos: {e}")
-        return {"statusCode": 500, "body": "Erro ao conectar ao banco de dados de Acompanhamentos"}
-    finally:
-        if conn:
-            conn.close()
-            print("Conexão fechada.")
+            # Fechar cursor e conexão
+            cur.close()
+            print(f"Acompanhamentos removidos em {datetime.now()}.")
+        except Exception as e:
+            print(f"Erro ao conectar em Acompanhamentos: {e}")
+            return {"statusCode": 500, "body": "Erro ao conectar ao banco de dados de Acompanhamentos"}
+        finally:
+            if conn:
+                conn.close()
+                print("Conexão fechada.")
     
 
     return {"statusCode": 200, "body": "Conexão bem-sucedida!"}
